@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/loan_app.css' %}">
+    <title>Title</title>
+</head>
+<body>
+
+
+<ul>
+    {% for info in info_in_page %}
+    <li class="loan-app-info">
+        <div>
+            {{ info.phone_number }}
+            {{ info.product }}
+            {{ info.solution }}
+            {{ info.date_application }}
+            {{ info.comment }}
+        </div>
+    </li>
+{% endfor %}
+</ul>
+
+<div class="pagination">
+ <span class="step-links">
+  {% if info_in_page.has_previous %}
+      <a href="?page={{ info_in_page.previous_page_number }}">Previous</a>
+  {% endif %}
+     <span class="current">
+  Page {{ info_in_page.number }} of {{ info_in_page.paginator.num_pages }}.
+    </span>
+     {% if info_in_page.has_next %}
+         <a href="?page={{ info_in_page.next_page_number }}">Next</a>
+     {% endif %}
+  </span>
+</div>
+</body>
+</html>
