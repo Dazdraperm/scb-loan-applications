@@ -1,6 +1,4 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.forms import ModelForm, model_to_dict
-
 from main.forms import LoanAppForm
 from main.models import Client, LoanApplication
 
@@ -13,7 +11,7 @@ def create_paginator(request, data):
     object_list = data
     count_object_on_page = 15
 
-    paginator = Paginator(object_list, count_object_on_page)  # 3 поста на каждой странице
+    paginator = Paginator(object_list, count_object_on_page)
     page = request.GET.get('page')
 
     try:
@@ -27,6 +25,8 @@ def create_paginator(request, data):
 
 
 def filling_forms_loan_app(loan_apps, forms):
+    """ Заполняет формы данными """
+
     for loan_app in loan_apps:
         data = {
             'id': loan_app.id,
@@ -40,8 +40,11 @@ def filling_forms_loan_app(loan_apps, forms):
 
 
 def get_completed_forms_loan_app() -> list:
+    """ Отдает список с заполненными формами """
     loan_apps = get_loan_app()
     forms = []
+
+    # Меняет словарь, поэтому ничего не возвращает
     filling_forms_loan_app(loan_apps, forms)
 
     return forms
@@ -63,26 +66,20 @@ def save_loan_app(id_loan_app, phone_number, product, solution, comment):
         return None
 
 
-def create_loan_app(phone_number, product, solution, comment):
+def create_loan_app_and_client(phone_number, product, solution, comment):
     client = Client.objects.get_or_create(phone_number=phone_number)
     LoanApplication.objects.create(client_fk=client[0], solution=solution, text_comment=comment, product=product)
 
 
-def save_or_create_loan_app_or_none(request):
-    form = LoanAppForm(request.POST)
+def save_or_create_loan_app_or_none(form):
+    id_loan_app = form.cleaned_data['id']
+    phone_number = form.cleaned_data['phone_number']
+    product = form.cleaned_data['product']
+    solution = form.cleaned_data['solution']
+    comment = form.cleaned_data['comment']
 
-    if form.is_valid():
-        id_loan_app = form.cleaned_data['id']
-        phone_number = form.cleaned_data['phone_number']
-        product = form.cleaned_data['product']
-        solution = form.cleaned_data['solution']
-        comment = form.cleaned_data['comment']
-
-        # Если id уже есть, значит есть и loan_app
-        if id_loan_app:
-            save_loan_app(id_loan_app, phone_number, product, solution, comment)
-        else:
-            create_loan_app(phone_number, product, solution, comment)
-
+    # Если id уже есть, значит есть и loan_app
+    if id_loan_app:
+        save_loan_app(id_loan_app, phone_number, product, solution, comment)
     else:
-        return None
+        create_loan_app_and_client(phone_number, product, solution, comment)

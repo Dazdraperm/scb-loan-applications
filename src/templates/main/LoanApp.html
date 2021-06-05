@@ -34,7 +34,9 @@
                 <div>
                     <button type="submit">Сохранить</button>
                 </div>
-
+                {% if info.error %}
+                    {{ info.error }}
+                {% endif %}
             </li>
         </form>
 
@@ -43,6 +45,7 @@
     <form method="post" action="/">
         {% csrf_token %}
         <li class="loan-app-info">
+
             <div>{{ form.phone_number }}</div>
             <div>{{ form.product }}</div>
             <div>{{ form.solution }}</div>
@@ -54,7 +57,17 @@
 
 
         </li>
+
     </form>
+    {% if form.errors %}
+        <li class="errors">
+        {% for field, error in form.errors.items %}
+            <div>
+                <b>{{ field }}</b> {{ error }}
+            </div>
+        {% endfor %}
+        </li>
+    {% endif %}
 </ul>
 
 <div class="pagination">

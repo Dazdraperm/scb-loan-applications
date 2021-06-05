@@ -1,9 +1,7 @@
-import datetime
 import re
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import timezone
 from djchoices import DjangoChoices, ChoiceItem
 
 """ ↓ Дополнительные классы, для модели LoanApplication ↓ """
@@ -45,8 +43,7 @@ class LoanApplication(models.Model):
     class Meta:
         ordering = ['-client_fk_id']
 
-
 # class Comment(models.Model):
 #     Выбрал не TextField, чтобы задать длину, для большего контроля за памятью
-    # text_comment = models.CharField(max_length=250, verbose_name='Текст комментария')
-    # loan_app = models.ForeignKey(LoanApplication, on_delete=models.CASCADE)
+# text_comment = models.CharField(max_length=250, verbose_name='Текст комментария')
+# loan_app = models.ForeignKey(LoanApplication, on_delete=models.CASCADE)
