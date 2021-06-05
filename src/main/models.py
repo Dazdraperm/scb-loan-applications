@@ -35,7 +35,7 @@ class Client(models.Model):
 
 class LoanApplication(models.Model):
     client_fk = models.ForeignKey(Client, on_delete=models.DO_NOTHING)
-    date_application = models.DateTimeField(verbose_name='Время подачи заявки', auto_now=True)
+    date_application = models.DateTimeField(verbose_name='Время подачи заявки', auto_now_add=True)
     product = models.CharField(choices=Products.choices, verbose_name='На что кредит', max_length=15)
     solution = models.CharField(choices=Solutions.choices, verbose_name='Решение по кредиту', max_length=15, null=True,
                                 blank=True)

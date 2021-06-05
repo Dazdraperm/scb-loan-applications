@@ -11,16 +11,24 @@
 
 <ul>
     {% for info in info_in_page %}
-    <li class="loan-app-info">
-        <div>
-            {{ info.phone_number }}
-            {{ info.product }}
-            {{ info.solution }}
-            {{ info.date_application }}
-            {{ info.comment }}
-        </div>
-    </li>
-{% endfor %}
+
+        <li class="loan-app-info">
+            <form method="post" action="/">
+                {% csrf_token %}
+                <div>
+                    <input name="id" type="hidden" value="{{ info.id.value }}">
+                    {{ info.phone_number }}
+                    {{ info.product }}
+                    {{ info.solution }}
+                    {{ info.date_application }}
+                    {{ info.comment }}
+                    <button type="submit">Сохранить</button>
+                </div>
+
+            </form>
+        </li>
+
+    {% endfor %}
 </ul>
 
 <div class="pagination">
