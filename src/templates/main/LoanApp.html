@@ -10,25 +10,51 @@
 
 
 <ul>
+    <li class="loan-app-tag">
+
+        <div><h4>Номер клиента</h4></div>
+        <div><h4>Продукт</h4></div>
+        <div><h4>Решение</h4></div>
+        <div><h4>Дата</h4></div>
+        <div><h4>Комментарий</h4></div>
+
+    </li>
     {% for info in info_in_page %}
 
-        <li class="loan-app-info">
-            <form method="post" action="/">
-                {% csrf_token %}
+
+        <form method="post" action="/">
+            {% csrf_token %}
+            <li class="loan-app-info">
+                <input name="id" type="hidden" value="{{ info.id.value }}">
+                <div>{{ info.phone_number }}</div>
+                <div>{{ info.product }}</div>
+                <div>{{ info.solution }}</div>
+                <div>{{ info.date_application }}</div>
+                <div>{{ info.comment }}</div>
                 <div>
-                    <input name="id" type="hidden" value="{{ info.id.value }}">
-                    {{ info.phone_number }}
-                    {{ info.product }}
-                    {{ info.solution }}
-                    {{ info.date_application }}
-                    {{ info.comment }}
                     <button type="submit">Сохранить</button>
                 </div>
 
-            </form>
-        </li>
+            </li>
+        </form>
+
 
     {% endfor %}
+    <form method="post" action="/">
+        {% csrf_token %}
+        <li class="loan-app-info">
+            <div>{{ form.phone_number }}</div>
+            <div>{{ form.product }}</div>
+            <div>{{ form.solution }}</div>
+            <div>{{ form.date_application }}</div>
+            <div>{{ form.comment }}</div>
+            <div>
+                <button type="submit">Создать</button>
+            </div>
+
+
+        </li>
+    </form>
 </ul>
 
 <div class="pagination">
