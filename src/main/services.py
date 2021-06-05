@@ -1,10 +1,20 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from main.forms import LoanAppForm
 from main.models import Client, LoanApplication
+from django.core.exceptions import FieldError
 
 
-def get_loan_app():
-    return LoanApplication.objects.all().select_related('client_fk').order_by('id')
+def get_loan_app(field_sort):
+    if field_sort:
+        try:
+            split_field_sort = field_sort.split('-')
+            if split_field_sort[1] == 'from_top':
+                return LoanApplication.objects.all().select_related().order_by(split_field_sort[0])[::-1]
+            elif split_field_sort[1] == 'from_down':
+                return LoanApplication.objects.all().select_related().order_by(split_field_sort[0])
+        except FieldError:
+            pass
+    return LoanApplication.objects.all().select_related().order_by('id')
 
 
 def create_paginator(request, data):
@@ -39,9 +49,9 @@ def filling_forms_loan_app(loan_apps, forms):
         forms.append(LoanAppForm(initial=data))
 
 
-def get_completed_forms_loan_app() -> list:
+def get_completed_forms_loan_app(field_sort) -> list:
     """ Отдает список с заполненными формами """
-    loan_apps = get_loan_app()
+    loan_apps = get_loan_app(field_sort)
     forms = []
 
     # Меняет словарь, поэтому ничего не возвращает
@@ -83,3 +93,26 @@ def save_or_create_loan_app_or_none(form):
         save_loan_app(id_loan_app, phone_number, product, solution, comment)
     else:
         create_loan_app_and_client(phone_number, product, solution, comment)
+
+
+""" 
+SELECT 
+     EXTRACT(year FROM date_application) as year,
+     EXTRACT(month FROM date_application) as month,
+     count(EXTRACT(month FROM date_application))
+FROM main_loanapplication group by year, month;
+"""
+
+""" 
+SELECT * from main_loanapplication 
+        where client_fk_id = '9872927854'
+        ORDER BY date_application desc
+        LIMIT 1;
+"""
+""" 
+SELECT all_loan_app.client_fk_id from main_loanapplication as all_loan_app
+    join main_loanapplication as aprovved
+        on all_loan_app.client_fk_id=aprovved.client_fk_id
+where aprovved.solution = 'Одобрено' and all_loan_app.date_application > aprovved.date_application;
+"""
+

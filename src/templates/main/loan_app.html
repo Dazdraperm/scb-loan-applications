@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'css/loan_app.css' %}">
+
     <title>Title</title>
 </head>
 <body>
@@ -11,14 +12,34 @@
 
 <ul>
     <li class="loan-app-tag">
+        <div class="loan-app-info"><h4>Номер клиента</h4>
+            <a href="?page={{ info_in_page.number }}&sort=client_fk-from_down">↓</a>
+            <a href="?page={{ info_in_page.number }}&sort=client_fk-from_top">↑</a>
+        </div>
 
-        <div><h4>Номер клиента</h4></div>
-        <div><h4>Продукт</h4></div>
-        <div><h4>Решение</h4></div>
-        <div><h4>Дата</h4></div>
-        <div><h4>Комментарий</h4></div>
+        <div class="loan-app-info"><h4>Продукт</h4>
+            <a href="?page={{ info_in_page.number }}&sort=product-from_down">↓</a>
+            <a href="?page={{ info_in_page.number }}&sort=product-from_top">↑</a>
+        </div>
+
+        <div class="loan-app-info"><h4>Решение</h4>
+            <a href="?page={{ info_in_page.number }}&sort=solution-from_down">↓</a>
+            <a href="?page={{ info_in_page.number }}&sort=solution-from_top">↑</a>
+        </div>
+
+        <div class="loan-app-info"><h4>Дата</h4>
+            <a href="?page={{ info_in_page.number }}&sort=date_application-from_down">↓</a>
+            <a href="?page={{ info_in_page.number }}&sort=date_application-from_top">↑</a>
+        </div>
+
+        <div class="loan-app-info"><h4>Комментарий</h4>
+            <a href="?page={{ info_in_page.number }}&sort=text_comment-from_down">↓</a>
+            <a href="?page={{ info_in_page.number }}&sort=text_comment-from_top">↑</a>
+        </div>
+
 
     </li>
+    <a href="?page={{ info_in_page.number }}">Сбросить сортировку</a>
     {% for info in info_in_page %}
 
 
@@ -61,11 +82,11 @@
     </form>
     {% if form.errors %}
         <li class="errors">
-        {% for field, error in form.errors.items %}
-            <div>
-                <b>{{ field }}</b> {{ error }}
-            </div>
-        {% endfor %}
+            {% for field, error in form.errors.items %}
+                <div>
+                    <b>{{ field }}</b> {{ error }}
+                </div>
+            {% endfor %}
         </li>
     {% endif %}
 </ul>
@@ -83,5 +104,7 @@
      {% endif %}
   </span>
 </div>
+
+<script src="{% static 'js/scripts_for_change_href.js' %}" rel="script"></script>
 </body>
 </html>
