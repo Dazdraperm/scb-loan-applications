@@ -133,49 +133,56 @@ def get_json_loan_app(request):
         return None
 
 
+def get_loan_app_on_id_or_none(id):
+
+    try:
+        loan_app = LoanApplication.objects.get(id=id)
+        return loan_app
+    except LoanApplication.DoesNotExist:
+        pass
+    return None
+
+
 def get_status_on_loan_app(request):
     loan_app = request.GET.get('loan_application')
     user = int(request.GET.get('user'))
     try:
         status_edit = StatusEdit.objects.get(loan_app=loan_app)
-
-        if status_edit.user.id != 0:
-
-            if not status_edit.status and status_edit.user.id == user:
-                return True
-            else:
-                return False
-        else:
+        if not status_edit.status and status_edit.user.id == user:
             return True
-
-        # else:
-        #     status_edit.user = user
-        #     status_edit.status = False
-        #     status_edit.save()
+        else:
+            return False
 
     except StatusEdit.DoesNotExist:
-        # status_edit = StatusEdit(loan_app=loan_app, user=user, status=False)
-        # status_edit.save()
         return True
 
 
 def set_status_on_loan_app(request):
-    loan_app = request.GET.get('loan_application')
-    user = request.GET.get('user')
-    print(user)
-    loan_app = LoanApplication.objects.get(id=int(loan_app))
+    loan_app_id = int(request.GET.get('loan_application'))
+    user_id = int(request.GET.get('user'))
+    loan_app = get_loan_app_on_id_or_none(loan_app_id)
+    user = User.objects.get(id=user_id)
     try:
-
         status_edit = StatusEdit.objects.get(loan_app=loan_app)
         status_edit.user = user
         status_edit.status = False
         status_edit.save()
 
     except StatusEdit.DoesNotExist:
-        user = User.objects.get(id=int(user))
+
         status_edit = StatusEdit(loan_app=loan_app, user=user, status=False)
         status_edit.save()
         return True
+
+
+def delete_status_on_loan_app(request):
+    loan_app_id = int(request.GET.get('loan_application'))
+    loan_app = get_loan_app_on_id_or_none(loan_app_id)
+    try:
+        status_edit = StatusEdit.objects.get(loan_app=loan_app)
+        status_edit.delete()
+    except StatusEdit.DoesNotExist:
+        pass
 
 
 """ 

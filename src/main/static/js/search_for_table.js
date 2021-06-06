@@ -63,13 +63,9 @@ function check_status(field_set, id) {
     request.addEventListener("readystatechange", () => {
         if (request.readyState === 4 && request.status === 200) {
             var access_to_forms = request.response
-            if (access_to_forms === 'False')
-            {
+            if (access_to_forms === 'False') {
                 field_set.setAttribute('disabled', 'disabled');
-            }
-
-            else if (access_to_forms === 'True')
-            {
+            } else if (access_to_forms === 'True') {
                 field_set.removeAttribute('disabled');
             }
 
@@ -81,7 +77,6 @@ function check_status(field_set, id) {
 
 function set_status(field_set, id) {
     const request = new XMLHttpRequest();
-
     const url = "/set_status" + "?" + "loan_application=" + field_set.id + "&user=" + id;
     request.open('GET', url);
     request.setRequestHeader('Content-Type', 'application/x-www-form-url');
@@ -92,3 +87,25 @@ function set_status(field_set, id) {
     });
     request.send();
 }
+
+function delete_status(field_set) {
+    let nodes = field_set.target.parentElement.parentElement.childNodes
+    for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].id === 'id') {
+            const request = new XMLHttpRequest();
+            const url = "/delete_status" + "?" + "loan_application=" + nodes[i].value;
+            request.open('GET', url);
+            request.setRequestHeader('Content-Type', 'application/x-www-form-url');
+
+            request.addEventListener("readystatechange", () => {
+                if (request.readyState === 4 && request.status === 200) {
+                }
+            });
+            request.send();
+
+            break
+        }
+    }
+}
+
+window.addEventListener("focusout", delete_status);

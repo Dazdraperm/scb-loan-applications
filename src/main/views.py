@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from main.forms import LoanAppForm, AuthForm, RegistrationForm
 from main.services import create_paginator, get_completed_forms_loan_app, save_or_create_loan_app_or_none, \
-    get_json_loan_app, register_user, get_status_on_loan_app, set_status_on_loan_app
+    get_json_loan_app, register_user, get_status_on_loan_app, set_status_on_loan_app, delete_status_on_loan_app
 
 
 def auth_page(request):
@@ -93,4 +93,10 @@ def check_status(request):
 @login_required
 def set_status(request):
     set_status_on_loan_app(request)
-    return HttpResponse('okay')
+    return HttpResponse('')
+
+
+@login_required
+def delete_status(request):
+    delete_status_on_loan_app(request)
+    return HttpResponse('')
