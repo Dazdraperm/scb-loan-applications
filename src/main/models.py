@@ -22,7 +22,7 @@ class Products(DjangoChoices):
 
 """ ↑ """
 
-
+# По сути рудимент ,т.к. я взял за p_k номер клиента =>  в LoanApplication fk = phone_number
 class Client(models.Model):
     phone_number = models.CharField(max_length=10, verbose_name='Номер клиента', primary_key=True)
 
@@ -43,7 +43,9 @@ class LoanApplication(models.Model):
     class Meta:
         ordering = ['-client_fk_id']
 
-# class Comment(models.Model):
-#     Выбрал не TextField, чтобы задать длину, для большего контроля за памятью
-# text_comment = models.CharField(max_length=250, verbose_name='Текст комментария')
-# loan_app = models.ForeignKey(LoanApplication, on_delete=models.CASCADE)
+
+# Таблица для задания статуса edit/not edit для 4 задания
+class StatusEdit(models.Model):
+    status = models.BooleanField(verbose_name='Статус поля')
+    # True - можно менять
+    loan_app = models.OneToOneField(LoanApplication, on_delete=models.CASCADE, default=True)

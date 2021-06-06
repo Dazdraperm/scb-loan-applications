@@ -24,3 +24,21 @@ class LoanAppForm(forms.ModelForm):
                            'Number phone is not correct, please enter number for mask - 0000000000')
 
         return cleaned_data
+
+
+class AuthForm(forms.Form):
+    email = forms.CharField()
+    password = forms.CharField()
+
+
+class RegistrationForm(forms.Form):
+    email = forms.CharField()
+    password = forms.CharField()
+    password2 = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data["password"] != cleaned_data["password2"]:
+            self.add_error("password", "Пароли не совпадают")
+        return cleaned_data
+

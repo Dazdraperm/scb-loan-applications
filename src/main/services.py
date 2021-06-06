@@ -1,19 +1,34 @@
+import json
+
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.serializers.json import DjangoJSONEncoder
+from django.forms import model_to_dict
+
 from main.forms import LoanAppForm
 from main.models import Client, LoanApplication
 from django.core.exceptions import FieldError
+from django.db.utils import DataError
 
 
-def get_loan_app(field_sort):
-    if field_sort:
-        try:
+def register_user(email, password):
+    """Регистрация нового пользователя"""
+    user = User(email=email, username=email)
+    user.set_password(password)
+    user.save()
+    return user
+
+
+def get_loan_app(field_sort=None):
+    try:
+        if field_sort:
             split_field_sort = field_sort.split('-')
             if split_field_sort[1] == 'from_top':
                 return LoanApplication.objects.all().select_related().order_by(split_field_sort[0])[::-1]
             elif split_field_sort[1] == 'from_down':
                 return LoanApplication.objects.all().select_related().order_by(split_field_sort[0])
-        except FieldError:
-            pass
+    except FieldError:
+        pass
     return LoanApplication.objects.all().select_related().order_by('id')
 
 
@@ -95,6 +110,29 @@ def save_or_create_loan_app_or_none(form):
         create_loan_app_and_client(phone_number, product, solution, comment)
 
 
+def get_json_loan_app(request):
+    name_field = request.GET.get('what').split('_', 1)[1]
+    value_field = request.GET.get('value')
+
+    # LIMIT 1, чтобы не мучаться с парсингом json на фронте
+    # Запрос работает в консоли, а здесь нет
+    # SELECT * FROM main_loanapplication WHERE client_fk_id LIKE '%111%' ORDER BY date_application LIMIT 1;
+    # TODO почему-то LIKE не работает в SQL raw, скорее всего из-за того, что здесь как-то переопределен символ %
+    try:
+        loan_apps = LoanApplication.objects.raw(
+            f'SELECT * FROM main_loanapplication WHERE {name_field} = \'{value_field}\' ORDER BY date_application desc LIMIT 1;')
+
+        loan_app = loan_apps[0]
+        dict_loan_app = model_to_dict(loan_app)
+        dict_loan_app['date_application'] = loan_app.date_application
+
+        return json.dumps(dict_loan_app, cls=DjangoJSONEncoder)
+    except IndexError:
+        return None
+    except DataError:
+        return None
+
+
 """ 
 SELECT 
      EXTRACT(year FROM date_application) as year,
@@ -115,4 +153,3 @@ SELECT all_loan_app.client_fk_id from main_loanapplication as all_loan_app
         on all_loan_app.client_fk_id=aprovved.client_fk_id
 where aprovved.solution = 'Одобрено' and all_loan_app.date_application > aprovved.date_application;
 """
-

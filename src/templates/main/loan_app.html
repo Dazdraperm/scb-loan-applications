@@ -11,6 +11,28 @@
 
 
 <ul>
+    <li class="loan-app-info my_width">
+
+        <div class="loan-app-info"><input id="input_client_fk_id" placeholder="search phone number">
+            <button id="client_fk_id" onclick="search(this)">&#x1F50D</button>
+        </div>
+        <div class="loan-app-info"><input id="input_product" placeholder="search product" value="{{ info.id.value }}">
+            <button id="product" onclick="search(this)">&#x1F50D</button>
+        </div>
+        <div class="loan-app-info"><input id="input_solution" placeholder="search solution" value="{{ info.id.value }}">
+            <button id="solution" onclick="search(this)">&#x1F50D</button>
+        </div>
+        <div class="loan-app-info"><input id="input_date_application" placeholder="search date"
+                                          value="{{ info.id.value }}">
+            <button id="date_application" onclick="search(this)">&#x1F50D</button>
+        </div>
+        <div class="loan-app-info"><input id="input_text_comment" placeholder="search comment"
+                                          value="{{ info.id.value }}">
+            <button id="comment" onclick="search(this)">&#x1F50D</button>
+        </div>
+
+
+    </li>
     <li class="loan-app-tag">
         <div class="loan-app-info"><h4>Номер клиента</h4>
             <a href="?page={{ info_in_page.number }}&sort=client_fk-from_down">↓</a>
@@ -40,55 +62,34 @@
 
     </li>
     <a href="?page={{ info_in_page.number }}">Сбросить сортировку</a>
-    {% for info in info_in_page %}
+    <span id="main_info">
+        {% for info in info_in_page %}
 
 
-        <form method="post" action="/">
-            {% csrf_token %}
-            <li class="loan-app-info">
-                <input name="id" type="hidden" value="{{ info.id.value }}">
-                <div>{{ info.phone_number }}</div>
-                <div>{{ info.product }}</div>
-                <div>{{ info.solution }}</div>
-                <div>{{ info.date_application }}</div>
-                <div>{{ info.comment }}</div>
-                <div>
-                    <button type="submit">Сохранить</button>
-                </div>
-                {% if info.error %}
-                    {{ info.error }}
-                {% endif %}
-            </li>
-        </form>
+            <form method="post" action="/">
+                {% csrf_token %}
+                <li class="loan-app-info">
+                    <input id="id" name="id" type="hidden" value="{{ info.id.value }}">
+                    <div>{{ info.phone_number }}
+                        <div>
+                            <button type="submit">Сохранить</button>
+                        </div>
+                    </div>
+                    <div>{{ info.product }}</div>
+                    <div>{{ info.solution }}</div>
+                    <div>{{ info.date_application }}</div>
+                    <div>{{ info.comment }}</div>
+                    {% if info.error %}
+                        {{ info.error }}
+                    {% endif %}
+                </li>
+            </form>
 
 
-    {% endfor %}
-    <form method="post" action="/">
-        {% csrf_token %}
-        <li class="loan-app-info">
-
-            <div>{{ form.phone_number }}</div>
-            <div>{{ form.product }}</div>
-            <div>{{ form.solution }}</div>
-            <div>{{ form.date_application }}</div>
-            <div>{{ form.comment }}</div>
-            <div>
-                <button type="submit">Создать</button>
-            </div>
+        {% endfor %}
+    </span>
 
 
-        </li>
-
-    </form>
-    {% if form.errors %}
-        <li class="errors">
-            {% for field, error in form.errors.items %}
-                <div>
-                    <b>{{ field }}</b> {{ error }}
-                </div>
-            {% endfor %}
-        </li>
-    {% endif %}
 </ul>
 
 <div class="pagination">
@@ -104,7 +105,34 @@
      {% endif %}
   </span>
 </div>
+<form method="post" action="/">
+    {% csrf_token %}
+    <li class="loan-app-info">
 
-<script src="{% static 'js/scripts_for_change_href.js' %}" rel="script"></script>
+        <div>{{ form.phone_number }}
+            <div>
+                <button type="submit">Создать</button>
+            </div>
+        </div>
+        <div>{{ form.product }}</div>
+        <div>{{ form.solution }}</div>
+        <div>{{ form.date_application }}</div>
+        <div>{{ form.comment }}</div>
+
+
+    </li>
+
+</form>
+{% if form.errors %}
+    <li class="errors">
+        {% for field, error in form.errors.items %}
+            <div>
+                <b>{{ field }}</b> {{ error }}
+            </div>
+        {% endfor %}
+    </li>
+{% endif %}
+
+<script src="{% static 'js/search_for_table.js' %}" rel="script"></script>
 </body>
 </html>
