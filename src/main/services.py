@@ -6,7 +6,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.forms import model_to_dict
 
 from main.forms import LoanAppForm
-from main.models import Client, LoanApplication
+from main.models import Client, LoanApplication, StatusEdit
 from django.core.exceptions import FieldError
 from django.db.utils import DataError
 
@@ -131,6 +131,51 @@ def get_json_loan_app(request):
         return None
     except DataError:
         return None
+
+
+def get_status_on_loan_app(request):
+    loan_app = request.GET.get('loan_application')
+    user = int(request.GET.get('user'))
+    try:
+        status_edit = StatusEdit.objects.get(loan_app=loan_app)
+
+        if status_edit.user.id != 0:
+
+            if not status_edit.status and status_edit.user.id == user:
+                return True
+            else:
+                return False
+        else:
+            return True
+
+        # else:
+        #     status_edit.user = user
+        #     status_edit.status = False
+        #     status_edit.save()
+
+    except StatusEdit.DoesNotExist:
+        # status_edit = StatusEdit(loan_app=loan_app, user=user, status=False)
+        # status_edit.save()
+        return True
+
+
+def set_status_on_loan_app(request):
+    loan_app = request.GET.get('loan_application')
+    user = request.GET.get('user')
+    print(user)
+    loan_app = LoanApplication.objects.get(id=int(loan_app))
+    try:
+
+        status_edit = StatusEdit.objects.get(loan_app=loan_app)
+        status_edit.user = user
+        status_edit.status = False
+        status_edit.save()
+
+    except StatusEdit.DoesNotExist:
+        user = User.objects.get(id=int(user))
+        status_edit = StatusEdit(loan_app=loan_app, user=user, status=False)
+        status_edit.save()
+        return True
 
 
 """ 

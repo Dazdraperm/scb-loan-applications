@@ -1,5 +1,6 @@
 import re
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from djchoices import DjangoChoices, ChoiceItem
@@ -21,6 +22,7 @@ class Products(DjangoChoices):
 
 
 """ ↑ """
+
 
 # По сути рудимент ,т.к. я взял за p_k номер клиента =>  в LoanApplication fk = phone_number
 class Client(models.Model):
@@ -46,6 +48,7 @@ class LoanApplication(models.Model):
 
 # Таблица для задания статуса edit/not edit для 4 задания
 class StatusEdit(models.Model):
-    status = models.BooleanField(verbose_name='Статус поля')
+    status = models.BooleanField(verbose_name='Статус поля', default=True)
     # True - можно менять
-    loan_app = models.OneToOneField(LoanApplication, on_delete=models.CASCADE, default=True)
+    loan_app = models.OneToOneField(LoanApplication, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

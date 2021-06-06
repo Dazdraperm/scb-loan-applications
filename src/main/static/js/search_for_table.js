@@ -28,10 +28,9 @@ function search(button) {
                         let child = array_main_info_childs[i]
 
                         if (child.nodeName === 'FORM' && for_not_delete_1_form === 0) {
-                                console.log(child.childNodes[3])
-                                for_not_delete_1_form++
-                        }
-                        else if (child.nodeName === 'FORM') {
+                            console.log(child.childNodes[3])
+                            for_not_delete_1_form++
+                        } else if (child.nodeName === 'FORM') {
                             document.getElementById('main_info').removeChild(child)
                         }
                     }
@@ -52,4 +51,44 @@ function search(button) {
         }
 
     }
+}
+
+function check_status(field_set, id) {
+    const request = new XMLHttpRequest();
+
+    const url = "/check_status" + "?" + "loan_application=" + field_set.id + "&user=" + id;
+    request.open('GET', url);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-url');
+
+    request.addEventListener("readystatechange", () => {
+        if (request.readyState === 4 && request.status === 200) {
+            var access_to_forms = request.response
+            if (access_to_forms === 'False')
+            {
+                field_set.setAttribute('disabled', 'disabled');
+            }
+
+            else if (access_to_forms === 'True')
+            {
+                field_set.removeAttribute('disabled');
+            }
+
+
+        }
+    });
+    request.send();
+}
+
+function set_status(field_set, id) {
+    const request = new XMLHttpRequest();
+
+    const url = "/set_status" + "?" + "loan_application=" + field_set.id + "&user=" + id;
+    request.open('GET', url);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-url');
+
+    request.addEventListener("readystatechange", () => {
+        if (request.readyState === 4 && request.status === 200) {
+        }
+    });
+    request.send();
 }

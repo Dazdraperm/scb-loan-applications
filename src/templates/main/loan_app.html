@@ -66,23 +66,23 @@
         {% for info in info_in_page %}
 
 
-            <form method="post" action="/">
+            <form method="post" action="/" disabled="disabled">
                 {% csrf_token %}
-                <li class="loan-app-info">
+                <fieldset id="{{ info.id.value }}" class="loan-app-info" onchange="set_status(this, {{ user.id }})" onclick="check_status(this, {{ user.id }})">
                     <input id="id" name="id" type="hidden" value="{{ info.id.value }}">
                     <div>{{ info.phone_number }}
                         <div>
                             <button type="submit">Сохранить</button>
                         </div>
                     </div>
-                    <div>{{ info.product }}</div>
+                    <div >{{ info.product }}</div>
                     <div>{{ info.solution }}</div>
                     <div>{{ info.date_application }}</div>
                     <div>{{ info.comment }}</div>
                     {% if info.error %}
                         {{ info.error }}
                     {% endif %}
-                </li>
+                </fieldset>
             </form>
 
 
