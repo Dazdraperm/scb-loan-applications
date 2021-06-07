@@ -22,9 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(vu!m(#e7wk%yw8x8or(cw2brhrg%1x8!2r^)6t(uxy^@=w_ma'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "true").lower() == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.99.100', 'localhost']
 
 # Application definition
 
@@ -85,11 +85,11 @@ WSGI_APPLICATION = 'loan_applications.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'loan_app'),
-        'USER': os.environ.get('DB_USER', 'loan_app'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'loan_app'),
-        'HOST': os.environ.get("DB_HOST", '192.168.99.100'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'NAME': 'loan_app',
+        'USER': 'loan_app',
+        'PASSWORD': 'loan_app',
+        'HOST': '192.168.99.100',
+        'PORT': '5432',
 
     }
 }

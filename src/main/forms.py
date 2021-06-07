@@ -5,12 +5,16 @@ from django.forms import widgets
 
 from main.models import LoanApplication
 
+date_errors = {
+    'invalid': 'mask must have is ( year-month-day hours:minute:second ) example: 2021-06-06 23:45:13'
+}
+
 
 class LoanAppForm(forms.ModelForm):
     id = forms.IntegerField(required=False)
     phone_number = forms.CharField(max_length=10)
     comment = forms.CharField(max_length=250, required=False)
-    date_application = forms.DateTimeField()
+    date_application = forms.DateTimeField(error_messages=date_errors)
 
     class Meta:
         model = LoanApplication
@@ -41,4 +45,3 @@ class RegistrationForm(forms.Form):
         if cleaned_data["password"] != cleaned_data["password2"]:
             self.add_error("password", "Пароли не совпадают")
         return cleaned_data
-
